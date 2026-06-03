@@ -6,644 +6,658 @@
     <title>BLOOM | Official Space</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --cream: #f5f0e8;
-            --warm-white: #faf8f4;
-            --muted: #9e9590;
-            --soft-black: #1a1814;
-            --accent: #c8b89a;
-            --blush: #e8d5c4;
-            --ink: #2d2926;
+            --bg: #050505;
+            --fg: #f0ede8;
+            --muted: rgba(240,237,232,0.38);
+            --line: rgba(255,255,255,0.06);
+            --cyan:  #00f5ff;
+            --pink:  #ff2d78;
+            --violet:#b44dff;
+            --lime:  #aaff00;
         }
-        * { box-sizing: border-box; }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+
         body {
-            background-color: var(--warm-white);
-            color: var(--ink);
-            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            font-family: 'Space Grotesk', sans-serif;
             font-weight: 300;
-            cursor: none;
-        }
-        .font-display { font-family: 'Cormorant Garamond', serif; }
-        .font-mono-custom { font-family: 'DM Mono', monospace; }
-
-        /* Custom cursor */
-        .cursor {
-            width: 8px; height: 8px;
-            background: var(--soft-black);
-            border-radius: 50%;
-            position: fixed; pointer-events: none; z-index: 9999;
-            transform: translate(-50%, -50%);
-            transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, background 0.3s ease;
-        }
-        .cursor-ring {
-            width: 32px; height: 32px;
-            border: 1px solid var(--soft-black);
-            border-radius: 50%;
-            position: fixed; pointer-events: none; z-index: 9998;
-            transform: translate(-50%, -50%);
-            transition: transform 0.15s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s ease;
-            opacity: 0.4;
-        }
-        body:hover .cursor { opacity: 1; }
-
-        /* Grain overlay */
-        body::before {
-            content: '';
-            position: fixed; inset: 0; z-index: 9990;
-            pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-            opacity: 0.35;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
         }
 
-        /* Nav */
+        /* ── LASER BUBBLE KEYFRAMES ── */
+        @keyframes float-a {
+            0%,100% { transform: translate(0px,  0px)  scale(1);    }
+            33%      { transform: translate(30px,-40px) scale(1.08); }
+            66%      { transform: translate(-20px,20px) scale(0.95); }
+        }
+        @keyframes float-b {
+            0%,100% { transform: translate(0px,  0px)  scale(1);    }
+            33%      { transform: translate(-40px,30px) scale(1.06); }
+            66%      { transform: translate(25px,-25px) scale(1.02); }
+        }
+        @keyframes float-c {
+            0%,100% { transform: translate(0px,  0px)  scale(1);    }
+            50%      { transform: translate(20px, 40px) scale(1.1);  }
+        }
+        @keyframes float-d {
+            0%,100% { transform: translate(0px, 0px)  scale(1);    }
+            40%      { transform: translate(-30px,-20px) scale(0.92); }
+            80%      { transform: translate(15px, 30px) scale(1.05); }
+        }
+
+        .bubble-a { animation: float-a 14s ease-in-out infinite; }
+        .bubble-b { animation: float-b 18s ease-in-out infinite; }
+        .bubble-c { animation: float-c 11s ease-in-out infinite; }
+        .bubble-d { animation: float-d 16s ease-in-out infinite; }
+
+        /* ── GRADIENT TEXT ── */
+        .bloom-gradient {
+            background: linear-gradient(100deg, var(--cyan) 0%, var(--violet) 45%, var(--pink) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ── NAV ── */
         nav {
-            position: fixed; top: 0; width: 100%; z-index: 100;
-            background: rgba(250, 248, 244, 0.88);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(200,184,154,0.2);
+            position: fixed; top: 0; width: 100%; z-index: 200;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            background: rgba(5,5,5,0.45);
+            border-bottom: 1px solid var(--line);
         }
 
-        /* Divider line */
-        .divider { border: none; border-top: 1px solid rgba(200,184,154,0.35); }
-
-        /* Section label */
-        .section-label {
-            font-family: 'DM Mono', monospace;
-            font-size: 10px;
-            letter-spacing: 0.25em;
-            text-transform: uppercase;
-            color: var(--muted);
-        }
-
-        /* Video card */
-        .video-card {
-            position: relative;
-            overflow: hidden;
-            background: var(--cream);
-            cursor: none;
-        }
-        .video-card .thumbnail {
-            width: 100%; aspect-ratio: 16/9;
-            object-fit: cover;
-            transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.5s ease;
-            filter: saturate(0.7) contrast(1.05);
-        }
-        .video-card:hover .thumbnail {
-            transform: scale(1.04);
-            filter: saturate(0.9) contrast(1.0);
-        }
-        .video-card .play-btn {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%) scale(0.9);
-            width: 52px; height: 52px;
-            background: rgba(250,248,244,0.92);
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            transition: transform 0.3s ease, background 0.3s ease;
-            border: 1px solid rgba(200,184,154,0.5);
-        }
-        .video-card:hover .play-btn {
-            transform: translate(-50%, -50%) scale(1);
-            background: rgba(250,248,244,1);
-        }
-        .video-card .play-icon {
-            width: 0; height: 0;
-            border-style: solid;
-            border-width: 8px 0 8px 14px;
-            border-color: transparent transparent transparent var(--soft-black);
-            margin-left: 3px;
-        }
-        .video-card .rec-badge {
-            position: absolute; top: 12px; left: 12px;
-            font-family: 'DM Mono', monospace;
-            font-size: 9px; letter-spacing: 0.2em;
-            color: var(--warm-white);
-            background: rgba(26,24,20,0.6);
-            padding: 3px 8px; border-radius: 2px;
-            backdrop-filter: blur(4px);
-        }
-        .video-card .duration-badge {
-            position: absolute; bottom: 12px; right: 12px;
-            font-family: 'DM Mono', monospace;
-            font-size: 9px; letter-spacing: 0.1em;
-            color: var(--warm-white);
-            background: rgba(26,24,20,0.55);
-            padding: 2px 7px; border-radius: 2px;
-            backdrop-filter: blur(4px);
-        }
-
-        /* Tag pill */
-        .tag {
-            font-family: 'DM Mono', monospace;
-            font-size: 9px; letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: var(--muted);
-            border: 1px solid rgba(200,184,154,0.45);
-            padding: 3px 10px; border-radius: 20px;
-            background: transparent;
-        }
-
-        /* Manifesto quote */
-        .manifesto-quote {
-            border-left: 2px solid var(--accent);
-            padding-left: 1.5rem;
-            color: var(--ink);
-            font-family: 'Cormorant Garamond', serif;
-            font-style: italic;
-            font-size: 1.15rem;
-            line-height: 1.8;
-        }
-
-        /* Store card */
-        .store-card {
-            background: var(--cream);
-            transition: transform 0.4s ease;
-        }
-        .store-card:hover { transform: translateY(-4px); }
-
-        /* Nav link hover */
         .nav-link {
-            position: relative;
-            font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
-            color: var(--muted);
-            transition: color 0.3s ease;
+            font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+            color: var(--muted); text-decoration: none; font-weight: 500;
+            transition: color 0.25s;
         }
-        .nav-link::after {
-            content: ''; position: absolute; bottom: -2px; left: 0;
-            width: 0; height: 1px; background: var(--soft-black);
-            transition: width 0.3s ease;
-        }
-        .nav-link:hover { color: var(--soft-black); }
-        .nav-link:hover::after { width: 100%; }
+        .nav-link:hover { color: var(--fg); }
 
-        /* Hero text reveal */
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(24px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .reveal { animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) both; }
-        .reveal-1 { animation-delay: 0.1s; }
-        .reveal-2 { animation-delay: 0.3s; }
-        .reveal-3 { animation-delay: 0.5s; }
-        .reveal-4 { animation-delay: 0.7s; }
-
-        /* Social icon hover */
-        .social-btn {
-            width: 32px; height: 32px;
+        .social-icon {
+            width: 32px; height: 32px; border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.1);
             display: flex; align-items: center; justify-content: center;
-            border: 1px solid rgba(200,184,154,0.4);
-            border-radius: 50%;
-            transition: border-color 0.3s, background 0.3s;
+            color: var(--muted); transition: border-color 0.25s, color 0.25s;
+            text-decoration: none;
         }
-        .social-btn:hover { background: var(--cream); border-color: var(--accent); }
+        .social-icon:hover { border-color: rgba(255,255,255,0.35); color: var(--fg); }
 
-        /* Quiz */
-        .quiz-option {
-            border: 1px solid rgba(200,184,154,0.4);
-            background: transparent;
-            transition: border-color 0.3s, background 0.3s;
-            text-align: left;
-            cursor: none;
+        .nav-cta {
+            font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+            font-weight: 600; padding: 8px 20px; border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.18);
+            color: var(--fg); text-decoration: none;
+            transition: background 0.25s, border-color 0.25s;
+            backdrop-filter: blur(8px);
         }
-        .quiz-option:hover {
-            border-color: var(--soft-black);
-            background: var(--cream);
+        .nav-cta:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.3); }
+
+        /* ── SECTION LABEL ── */
+        .label {
+            font-size: 10px; letter-spacing: 0.28em; text-transform: uppercase;
+            color: var(--muted); font-weight: 500;
         }
+
+        /* ── GLASS CARD ── */
+        .glass-card {
+            background: rgba(255,255,255,0.025);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            backdrop-filter: blur(12px);
+        }
+
+        /* ── THIN DIVIDER ── */
+        .divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); }
+
+        /* ── REDACTED ── */
+        .redacted {
+            background: var(--fg); color: transparent;
+            padding: 0 4px; border-radius: 2px;
+            transition: background 0.3s, color 0.3s; cursor: default;
+        }
+        .redacted:hover {
+            background: linear-gradient(90deg, var(--cyan), var(--violet));
+            color: #000;
+        }
+
+        /* ── VIDEO CARD ── */
+        .vid-wrap { position: relative; overflow: hidden; border-radius: 12px; }
+        .vid-wrap img {
+            width: 100%; display: block; object-fit: cover;
+            filter: saturate(0.65) brightness(0.8);
+            transition: filter 0.5s, transform 0.6s;
+        }
+        .vid-wrap:hover img { filter: saturate(0.9) brightness(0.95); transform: scale(1.03); }
+        .play-ring {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            width: 52px; height: 52px; border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.45);
+            background: rgba(5,5,5,0.5);
+            backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.25s, border-color 0.25s, transform 0.25s;
+        }
+        .vid-wrap:hover .play-ring {
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(255,255,255,0.7);
+            transform: translate(-50%,-50%) scale(1.08);
+        }
+        .vid-meta {
+            position: absolute; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+            background: rgba(5,5,5,0.6); backdrop-filter: blur(6px);
+            padding: 3px 9px; border-radius: 4px; color: rgba(255,255,255,0.6);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        /* ── QUIZ OPTION ── */
+        .q-opt {
+            width: 100%; text-align: left; background: transparent;
+            border: 1px solid rgba(255,255,255,0.07);
+            color: var(--muted); font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px; font-weight: 300;
+            padding: 16px 20px; border-radius: 10px; cursor: pointer;
+            transition: border-color 0.2s, color 0.2s, background 0.2s;
+        }
+        .q-opt:hover {
+            border-color: rgba(255,255,255,0.2);
+            color: var(--fg);
+            background: rgba(255,255,255,0.03);
+        }
+
+        /* ── STORE CARD HOVER ── */
+        .store-card { transition: transform 0.4s ease; }
+        .store-card:hover { transform: translateY(-5px); }
+
+        /* ── FADE-UP REVEAL ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .r1 { animation: fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
+        .r2 { animation: fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.22s both; }
+        .r3 { animation: fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.40s both; }
+        .r4 { animation: fadeUp 1s cubic-bezier(0.16,1,0.3,1) 0.56s both; }
+
+        /* ── MARQUEE ── */
+        .marquee-outer { overflow: hidden; }
+        .marquee-inner {
+            display: flex; gap: 0;
+            animation: march 22s linear infinite;
+            white-space: nowrap;
+        }
+        .marquee-inner span {
+            font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+            color: rgba(255,255,255,0.12); padding: 10px 28px;
+            border-right: 1px solid rgba(255,255,255,0.05); font-weight: 500;
+        }
+        .marquee-inner span.hi { color: rgba(255,255,255,0.32); }
+        @keyframes march { from { transform: translateX(0); } to { transform: translateX(-50%); } }
     </style>
 </head>
 <body>
 
-    <!-- Custom cursor -->
-    <div class="cursor" id="cursor"></div>
-    <div class="cursor-ring" id="cursor-ring"></div>
+<!-- ════════════════════════════════════════
+     NAV
+════════════════════════════════════════ -->
+<nav>
+    <div style="max-width:1320px; margin:0 auto; padding:0 28px; height:54px; display:flex; align-items:center; justify-content:space-between; gap:24px;">
 
-    <!-- NAV -->
-    <nav class="px-8 py-5 flex justify-between items-center">
-        <div class="font-display text-xl font-semibold tracking-widest" style="color: var(--soft-black);">BLOOM.</div>
-        <div class="hidden md:flex items-center gap-10">
+        <span style="font-size:17px; font-weight:700; letter-spacing:0.12em; color:var(--fg);">BLOOM.</span>
+
+        <div style="display:flex; gap:32px;" class="hidden md:flex">
             <a href="#manifesto" class="nav-link">Manifesto</a>
-            <a href="#stream" class="nav-link">Stream</a>
+            <a href="#stream"    class="nav-link">Stream</a>
             <a href="#quiz-container" class="nav-link">Audition</a>
-            <a href="#store" class="nav-link">Supply</a>
+            <a href="#store"    class="nav-link">Supply</a>
         </div>
-        <div class="flex items-center gap-3">
-            <a href="https://youtube.com" target="_blank" class="social-btn" aria-label="YouTube">
-                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" style="color:var(--muted)"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+
+        <div style="display:flex; align-items:center; gap:10px;">
+            <a href="https://youtube.com"  target="_blank" class="social-icon" aria-label="YouTube">
+                <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
             </a>
-            <a href="https://instagram.com" target="_blank" class="social-btn" aria-label="Instagram">
-                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" style="color:var(--muted)"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            <a href="https://instagram.com" target="_blank" class="social-icon" aria-label="Instagram">
+                <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
             </a>
-            <a href="https://twitter.com" target="_blank" class="social-btn" aria-label="Twitter">
-                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" style="color:var(--muted)"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <a href="https://twitter.com"  target="_blank" class="social-icon" aria-label="Twitter">
+                <svg width="13" height="13" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
             </a>
-            <a href="#quiz-container" style="color:var(--soft-black); border:1px solid var(--soft-black);" class="ml-2 text-xs tracking-widest uppercase px-5 py-2 rounded-full font-medium transition-all hover:bg-[var(--soft-black)] hover:text-[var(--warm-white)]">
-                Audition
+            <a href="#quiz-container" class="nav-cta" style="margin-left:6px;">Join Audition</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ════════════════════════════════════════
+     HERO
+════════════════════════════════════════ -->
+<header style="position:relative; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding: 100px 28px 80px; overflow:hidden;">
+
+    <!-- LASER BUBBLES -->
+    <div style="position:absolute; inset:0; pointer-events:none; overflow:hidden;">
+
+        <!-- Bubble A — cyan-violet, top-left -->
+        <div class="bubble-a" style="position:absolute; top:-10%; left:-8%;
+            width: clamp(420px,55vw,700px); height: clamp(420px,55vw,700px);
+            border-radius:50%;
+            background: radial-gradient(circle at 40% 40%, rgba(0,245,255,0.55) 0%, rgba(180,77,255,0.35) 55%, transparent 75%);
+            filter: blur(90px);
+            opacity: 0.75;">
+        </div>
+
+        <!-- Bubble B — pink-violet, bottom-right -->
+        <div class="bubble-b" style="position:absolute; bottom:-15%; right:-10%;
+            width: clamp(380px,50vw,650px); height: clamp(380px,50vw,650px);
+            border-radius:50%;
+            background: radial-gradient(circle at 55% 55%, rgba(255,45,120,0.6) 0%, rgba(180,77,255,0.3) 55%, transparent 75%);
+            filter: blur(100px);
+            opacity: 0.7;">
+        </div>
+
+        <!-- Bubble C — violet, centre -->
+        <div class="bubble-c" style="position:absolute; top:25%; left:35%;
+            width: clamp(280px,35vw,480px); height: clamp(280px,35vw,480px);
+            border-radius:50%;
+            background: radial-gradient(circle at 50% 50%, rgba(180,77,255,0.5) 0%, rgba(0,245,255,0.2) 60%, transparent 75%);
+            filter: blur(80px);
+            opacity: 0.6;">
+        </div>
+
+        <!-- Bubble D — lime accent, far right -->
+        <div class="bubble-d" style="position:absolute; top:10%; right:5%;
+            width: clamp(200px,22vw,320px); height: clamp(200px,22vw,320px);
+            border-radius:50%;
+            background: radial-gradient(circle at 45% 45%, rgba(170,255,0,0.38) 0%, rgba(0,245,255,0.2) 55%, transparent 75%);
+            filter: blur(70px);
+            opacity: 0.55;">
+        </div>
+    </div>
+
+    <!-- HERO TEXT -->
+    <div style="position:relative; z-index:10; max-width:860px;">
+        <p class="label r1" style="margin-bottom:28px; color:rgba(255,255,255,0.45);">A New Audio-Visual Dimension</p>
+
+        <h1 class="r2" style="font-size: clamp(3.8rem, 10vw, 9.5rem); font-weight:700; line-height:0.93; letter-spacing:-0.03em; color:#fff;">
+            WE DO NOT<br>JUST GROW,<br>
+            <span class="bloom-gradient">WE BLOOM.</span>
+        </h1>
+
+        <p class="r3" style="margin-top:32px; color:var(--muted); font-size:clamp(0.85rem,1.4vw,1rem); line-height:1.85; max-width:400px; margin-left:auto; margin-right:auto;">
+            A K-Pop collective built on raw authenticity, fluid identities, and radical sonic innovation.
+        </p>
+
+        <div class="r4" style="margin-top:40px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+            <a href="#quiz-container" style="font-size:11px; letter-spacing:0.18em; text-transform:uppercase; font-weight:600; padding:14px 32px; border-radius:999px; background:#fff; color:#050505; text-decoration:none; transition: opacity 0.2s;" onmouseover="this.style.opacity='.88'" onmouseout="this.style.opacity='1'">
+                Launch Audition
+            </a>
+            <a href="#stream" style="font-size:11px; letter-spacing:0.18em; text-transform:uppercase; font-weight:500; padding:14px 32px; border-radius:999px; border:1px solid rgba(255,255,255,0.18); color:rgba(255,255,255,0.7); text-decoration:none; transition: border-color 0.25s, color 0.25s;" onmouseover="this.style.borderColor='rgba(255,255,255,.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,.18)';this.style.color='rgba(255,255,255,.7)'">
+                Watch Films
             </a>
         </div>
-    </nav>
+    </div>
 
-    <!-- HERO -->
-    <header class="relative min-h-screen flex items-center pt-24 pb-20 px-8 md:px-16 overflow-hidden" style="background: var(--warm-white);">
-        <!-- Decorative circle -->
-        <div class="absolute right-0 top-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-20 pointer-events-none" style="background: radial-gradient(circle, var(--blush) 0%, transparent 70%);"></div>
+    <!-- Scroll hint -->
+    <div style="position:absolute; bottom:36px; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:8px; opacity:0.35;">
+        <span class="label">scroll</span>
+        <div style="width:1px; height:40px; background:linear-gradient(to bottom,rgba(255,255,255,0.5),transparent);"></div>
+    </div>
+</header>
 
-        <div class="max-w-7xl mx-auto w-full relative z-10">
-            <div class="reveal reveal-1">
-                <span class="section-label">A New Audio-Visual Dimension</span>
-            </div>
-            <h1 class="font-display mt-6 mb-8 reveal reveal-2" style="font-size: clamp(3.5rem, 9vw, 8rem); font-weight: 300; line-height: 1.05; letter-spacing: -0.02em; color: var(--soft-black);">
-                We do not<br>just grow,<br><em>we bloom.</em>
-            </h1>
-            <p class="max-w-md reveal reveal-3" style="color: var(--muted); font-size: 0.95rem; line-height: 1.8;">
-                A K-Pop collective built on raw authenticity, fluid identities, and radical sonic innovation.
-            </p>
-            <div class="mt-10 flex gap-4 reveal reveal-4">
-                <a href="#quiz-container" class="text-xs tracking-widest uppercase px-7 py-3.5 rounded-full font-medium transition-all" style="background: var(--soft-black); color: var(--warm-white);">
-                    Launch Audition
-                </a>
-                <a href="#stream" class="text-xs tracking-widest uppercase px-7 py-3.5 rounded-full font-medium transition-all" style="border: 1px solid rgba(200,184,154,0.6); color: var(--muted);">
-                    Watch Films
-                </a>
-            </div>
-        </div>
+<!-- Marquee strip -->
+<div class="marquee-outer" style="border-top:1px solid rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.05);">
+    <div class="marquee-inner">
+        <span class="hi">Anti-Stereotype</span><span>Self-Created</span><span class="hi">Raw Emotion</span><span>Bloom Collective</span><span class="hi">Sincerity Over Illusion</span><span>No Filter</span><span class="hi">Unpolished</span><span>Genuine</span><span class="hi">Anti-Stereotype</span><span>Self-Created</span><span class="hi">Raw Emotion</span><span>Bloom Collective</span><span class="hi">Sincerity Over Illusion</span><span>No Filter</span><span class="hi">Unpolished</span><span>Genuine</span>
+    </div>
+</div>
 
-        <!-- Scroll indicator -->
-        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-            <span class="section-label">scroll</span>
-            <div class="w-px h-12" style="background: linear-gradient(to bottom, var(--accent), transparent);"></div>
-        </div>
-    </header>
+<!-- ════════════════════════════════════════
+     MANIFESTO
+════════════════════════════════════════ -->
+<section id="manifesto" style="padding:110px 28px; max-width:1320px; margin:0 auto; border-bottom:1px solid rgba(255,255,255,0.05);">
+    <div style="display:grid; grid-template-columns:1fr; gap:72px;">
 
-    <hr class="divider mx-8 md:mx-16">
-
-    <!-- MANIFESTO -->
-    <section id="manifesto" class="py-28 px-8 md:px-16 max-w-7xl mx-auto">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-            <div class="lg:col-span-7">
-                <span class="section-label">01 — Manifesto</span>
-                <h2 class="font-display mt-6 mb-10" style="font-size: clamp(2.2rem, 5vw, 4.5rem); font-weight: 300; line-height: 1.1; color: var(--soft-black);">
-                    The fantasy is dead.<br><em>Long live sincerity.</em>
-                </h2>
-                <div class="space-y-6" style="color: var(--muted); font-size: 0.95rem; line-height: 1.9;">
-                    <p>The era of the manufactured idol is over. We refuse stereotypes that demand flawless, artificial expressions every minute.</p>
-                    <blockquote class="manifesto-quote my-8">
-                        "We emphasize raw passion, genuine emotions, and the strength creators bring to pursuing their dreams."
-                    </blockquote>
-                    <p>Sincerity is a rare currency. We don't build statues to worship — we create art to help you escape, even for just a few minutes.</p>
-                </div>
-            </div>
-            <div class="lg:col-span-5 grid grid-cols-2 gap-4 pt-12 lg:pt-16">
-                <div class="p-8 rounded-xl text-center flex flex-col justify-center items-center h-44" style="background: var(--cream); border: 1px solid rgba(200,184,154,0.3);">
-                    <span class="text-3xl mb-3">🔓</span>
-                    <span class="section-label">Anti-Stereotype</span>
-                </div>
-                <div class="p-8 rounded-xl text-center flex flex-col justify-center items-center h-44" style="background: var(--cream); border: 1px solid rgba(200,184,154,0.3);">
-                    <span class="text-3xl mb-3">✍️</span>
-                    <span class="section-label">Self-Created</span>
-                </div>
-                <div class="p-8 rounded-xl text-center flex flex-col justify-center items-center h-44 col-span-2" style="background: var(--blush); border: 1px solid rgba(200,184,154,0.3);">
-                    <span class="text-3xl mb-2">❤️</span>
-                    <span class="section-label">Genuine Emotion Over Illusion</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <hr class="divider mx-8 md:mx-16">
-
-    <!-- SINCERITY STREAM — VIDEO DOCS -->
-    <section id="stream" class="py-28 px-8 md:px-16 max-w-7xl mx-auto">
-        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-16">
-            <div>
-                <span class="section-label">02 — Sincerity Stream</span>
-                <h2 class="font-display mt-4" style="font-size: clamp(2rem, 4.5vw, 4rem); font-weight: 300; color: var(--soft-black);">
-                    Original<br><em>Documentaries</em>
-                </h2>
-            </div>
-            <p style="color: var(--muted); font-size: 0.85rem; max-width: 220px; line-height: 1.7;">
-                Unscripted. Unedited. An honest look inside.
-            </p>
-        </div>
-
-        <!-- Featured large video -->
-        <div class="mb-8">
-            <a href="https://youtube.com" target="_blank" class="video-card block rounded-2xl overflow-hidden group">
-                <div class="relative">
-                    <img
-                        src="https://images.unsplash.com/photo-1598387993441-a364f854c3e1?q=80&w=1600&auto=format&fit=crop"
-                        alt="BLOOM: Origins Documentary"
-                        class="thumbnail w-full"
-                        style="aspect-ratio: 16/7; object-fit: cover;"
-                    >
-                    <div class="play-btn">
-                        <div class="play-icon"></div>
-                    </div>
-                    <span class="rec-badge">BLOOM ORIGINALS</span>
-                    <span class="duration-badge">38:22</span>
-                    <!-- Overlay -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                </div>
-            </a>
-            <div class="mt-5 flex items-start justify-between">
-                <div>
-                    <h3 class="font-display text-2xl font-light" style="color: var(--soft-black);">BLOOM: Origins — Where It All Started</h3>
-                    <p class="mt-1 text-sm" style="color: var(--muted);">The first film. No script, no crew — just a phone and a question: what does it mean to be real?</p>
-                </div>
-                <div class="flex gap-2 mt-1 flex-shrink-0 ml-6">
-                    <span class="tag">Documentary</span>
-                    <span class="tag">2024</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Three smaller videos -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-            <!-- Video 2 -->
-            <div>
-                <a href="https://youtube.com" target="_blank" class="video-card block rounded-xl overflow-hidden group">
-                    <div class="relative">
-                        <img
-                            src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=800&auto=format&fit=crop"
-                            alt="Studio Sessions"
-                            class="thumbnail"
-                        >
-                        <div class="play-btn" style="width:40px;height:40px;">
-                            <div class="play-icon" style="border-width:6px 0 6px 10px; margin-left:2px;"></div>
-                        </div>
-                        <span class="rec-badge">EP. 01</span>
-                        <span class="duration-badge">12:04</span>
-                    </div>
-                </a>
-                <div class="mt-4">
-                    <span class="tag">Studio Sessions</span>
-                    <h3 class="font-display text-lg font-light mt-2" style="color: var(--soft-black);">Making the Demo at 4AM</h3>
-                    <p class="text-xs mt-1" style="color: var(--muted); line-height: 1.7;">Raw studio footage. The mistakes stayed in.</p>
-                </div>
-            </div>
-
-            <!-- Video 3 -->
-            <div>
-                <a href="https://youtube.com" target="_blank" class="video-card block rounded-xl overflow-hidden group">
-                    <div class="relative">
-                        <img
-                            src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=800&auto=format&fit=crop"
-                            alt="On Stage"
-                            class="thumbnail"
-                        >
-                        <div class="play-btn" style="width:40px;height:40px;">
-                            <div class="play-icon" style="border-width:6px 0 6px 10px; margin-left:2px;"></div>
-                        </div>
-                        <span class="rec-badge">EP. 02</span>
-                        <span class="duration-badge">9:47</span>
-                    </div>
-                </a>
-                <div class="mt-4">
-                    <span class="tag">On Stage</span>
-                    <h3 class="font-display text-lg font-light mt-2" style="color: var(--soft-black);">Before the Lights Come On</h3>
-                    <p class="text-xs mt-1" style="color: var(--muted); line-height: 1.7;">Backstage. The five minutes before everything changes.</p>
-                </div>
-            </div>
-
-            <!-- Video 4 -->
-            <div>
-                <a href="https://youtube.com" target="_blank" class="video-card block rounded-xl overflow-hidden group">
-                    <div class="relative">
-                        <img
-                            src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=800&auto=format&fit=crop"
-                            alt="Creative Process"
-                            class="thumbnail"
-                        >
-                        <div class="play-btn" style="width:40px;height:40px;">
-                            <div class="play-icon" style="border-width:6px 0 6px 10px; margin-left:2px;"></div>
-                        </div>
-                        <span class="rec-badge">EP. 03</span>
-                        <span class="duration-badge">15:30</span>
-                    </div>
-                </a>
-                <div class="mt-4">
-                    <span class="tag">Process</span>
-                    <h3 class="font-display text-lg font-light mt-2" style="color: var(--soft-black);">Writing Songs Nobody Asked For</h3>
-                    <p class="text-xs mt-1" style="color: var(--muted); line-height: 1.7;">How we make music that belongs to us first.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="mt-12 flex items-center gap-4">
-            <hr class="divider flex-1">
-            <a href="https://youtube.com" target="_blank" class="section-label whitespace-nowrap hover:text-[var(--soft-black)] transition-colors">View all films →</a>
-            <hr class="divider flex-1">
-        </div>
-    </section>
-
-    <hr class="divider mx-8 md:mx-16">
-
-    <!-- AUDITION QUIZ -->
-    <section id="quiz-container" class="py-28 px-8 md:px-16 max-w-3xl mx-auto">
-        <div id="quiz-intro" class="text-center">
-            <span class="section-label">03 — Recruitment</span>
-            <h2 class="font-display mt-6 mb-4" style="font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 300; color: var(--soft-black);">
-                Idol Archetype<br><em>Engine</em>
+        <div>
+            <p class="label" style="margin-bottom:28px;">01 — Manifesto</p>
+            <h2 style="font-size:clamp(2.6rem,6.5vw,6.5rem); font-weight:700; line-height:0.94; letter-spacing:-0.025em; color:#fff; margin-bottom:52px;">
+                The Fantasy<br>Is Dead.<br>
+                <span class="bloom-gradient">Long Live<br>Sincerity.</span>
             </h2>
-            <p class="mb-10 text-sm" style="color: var(--muted); line-height: 1.8;">
-                Discover your place in our sonic ecosystem.
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start;">
+
+            <!-- Left copy -->
+            <div style="display:flex; flex-direction:column; gap:24px; color:var(--muted); font-size:0.94rem; line-height:1.9; padding-left:1px; border-left:1px solid rgba(255,255,255,0.06); padding-left:28px;">
+                <p>The era of the manufactured idol is over. We refuse stereotypes that demand flawless, artificial expressions every minute.</p>
+
+                <!-- Redacted quote -->
+                <div class="glass-card" style="padding:24px 24px;">
+                    <p class="label" style="margin-bottom:14px; color:rgba(255,255,255,0.2);">Internal — Classified</p>
+                    <p style="font-size:0.93rem; line-height:1.9; color:rgba(255,255,255,0.7);">
+                        "We emphasize <span class="redacted">RAW PASSION</span> and <span class="redacted">REAL STRENGTH</span> — the genuine emotions creators bring to pursuing their dreams. Not the <span class="redacted">PERFECT MASK</span> you were sold."
+                    </p>
+                    <p style="margin-top:10px; font-size:9px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.12);">[Hover black blocks to reveal]</p>
+                </div>
+
+                <p>Sincerity is a rare currency. We don't build statues to worship — we create art to help you escape, even for just a few minutes.</p>
+            </div>
+
+            <!-- Right stat tiles -->
+            <div style="display:flex; flex-direction:column; gap:12px;">
+                <div class="glass-card" style="padding:28px 24px; display:flex; flex-direction:column; gap:10px;">
+                    <span style="font-size:28px;">🔓</span>
+                    <span class="label" style="color:rgba(255,255,255,0.5);">Anti-Stereotype</span>
+                </div>
+                <div class="glass-card" style="padding:28px 24px; display:flex; flex-direction:column; gap:10px;">
+                    <span style="font-size:28px;">✍️</span>
+                    <span class="label" style="color:rgba(255,255,255,0.5);">Self-Created</span>
+                </div>
+                <div class="glass-card" style="padding:28px 24px; display:flex; flex-direction:column; gap:10px; background:rgba(180,77,255,0.06); border-color:rgba(180,77,255,0.14);">
+                    <span style="font-size:28px;">❤️</span>
+                    <span class="label" style="color:rgba(255,255,255,0.5);">Genuine Emotion Over Illusion</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     SINCERITY STREAM — VIDEO DOCS
+════════════════════════════════════════ -->
+<section id="stream" style="padding:110px 28px; max-width:1320px; margin:0 auto; border-bottom:1px solid rgba(255,255,255,0.05);">
+
+    <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-end; gap:16px; margin-bottom:56px;">
+        <div>
+            <p class="label" style="margin-bottom:20px;">02 — Sincerity Stream</p>
+            <h2 style="font-size:clamp(2.4rem,5.5vw,5.5rem); font-weight:700; letter-spacing:-0.025em; line-height:0.94; color:#fff;">
+                Original<br><span class="bloom-gradient">Documentaries</span>
+            </h2>
+        </div>
+        <p style="max-width:200px; color:var(--muted); font-size:0.82rem; line-height:1.8; text-align:right;">
+            Unscripted.<br>Unedited.<br>An honest look inside.
+        </p>
+    </div>
+
+    <!-- Featured -->
+    <div class="glass-card" style="overflow:hidden; margin-bottom:16px;">
+        <a href="https://youtube.com" target="_blank" class="vid-wrap" style="display:block; border-radius:0;">
+            <img src="https://images.unsplash.com/photo-1598387993441-a364f854c3e1?q=80&w=1600&auto=format&fit=crop" alt="Origins" style="aspect-ratio:16/7;">
+            <div class="play-ring"><svg width="16" height="16" fill="#fff" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+            <span class="vid-meta" style="top:14px; left:14px;">● Bloom Originals</span>
+            <span class="vid-meta" style="bottom:14px; right:14px;">38:22</span>
+        </a>
+        <div style="padding:24px 28px; display:flex; flex-wrap:wrap; gap:16px; justify-content:space-between; align-items:flex-start;">
+            <div>
+                <h3 style="font-size:1.4rem; font-weight:600; color:#fff; letter-spacing:-0.01em;">BLOOM: Origins — Where It All Started</h3>
+                <p style="margin-top:6px; font-size:0.82rem; color:var(--muted); max-width:480px; line-height:1.8;">The first film. No script, no crew — just a phone and a question: what does it mean to be real?</p>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; align-self:center;">
+                <span style="font-size:9px; letter-spacing:0.2em; text-transform:uppercase; border:1px solid rgba(255,255,255,0.1); color:var(--muted); padding:4px 10px; border-radius:999px;">Documentary</span>
+                <span style="font-size:9px; letter-spacing:0.2em; text-transform:uppercase; border:1px solid rgba(0,245,255,0.2); color:rgba(0,245,255,0.7); padding:4px 10px; border-radius:999px;">Featured</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Three smaller -->
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px;">
+
+        <div class="glass-card" style="overflow:hidden;">
+            <a href="https://youtube.com" target="_blank" class="vid-wrap" style="display:block; border-radius:0;">
+                <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=800&auto=format&fit=crop" alt="Studio" style="aspect-ratio:16/9;">
+                <div class="play-ring" style="width:42px;height:42px;"><svg width="12" height="12" fill="#fff" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+                <span class="vid-meta" style="top:10px;left:10px;">Ep. 01</span>
+                <span class="vid-meta" style="bottom:10px;right:10px;">12:04</span>
+            </a>
+            <div style="padding:20px 20px;">
+                <span style="font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);border:1px solid rgba(255,255,255,0.08);padding:3px 9px;border-radius:999px;">Studio Sessions</span>
+                <h3 style="margin-top:12px; font-size:1.05rem; font-weight:600; color:#fff; letter-spacing:-0.01em;">Making the Demo at 4AM</h3>
+                <p style="margin-top:6px; font-size:0.78rem; color:var(--muted); line-height:1.75;">Raw footage. The mistakes stayed in.</p>
+            </div>
+        </div>
+
+        <div class="glass-card" style="overflow:hidden;">
+            <a href="https://youtube.com" target="_blank" class="vid-wrap" style="display:block; border-radius:0;">
+                <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?q=80&w=800&auto=format&fit=crop" alt="Stage" style="aspect-ratio:16/9;">
+                <div class="play-ring" style="width:42px;height:42px;"><svg width="12" height="12" fill="#fff" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+                <span class="vid-meta" style="top:10px;left:10px;">Ep. 02</span>
+                <span class="vid-meta" style="bottom:10px;right:10px;">9:47</span>
+            </a>
+            <div style="padding:20px 20px;">
+                <span style="font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);border:1px solid rgba(255,255,255,0.08);padding:3px 9px;border-radius:999px;">On Stage</span>
+                <h3 style="margin-top:12px; font-size:1.05rem; font-weight:600; color:#fff; letter-spacing:-0.01em;">Before the Lights Come On</h3>
+                <p style="margin-top:6px; font-size:0.78rem; color:var(--muted); line-height:1.75;">Five minutes before everything changes.</p>
+            </div>
+        </div>
+
+        <div class="glass-card" style="overflow:hidden;">
+            <a href="https://youtube.com" target="_blank" class="vid-wrap" style="display:block; border-radius:0;">
+                <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=800&auto=format&fit=crop" alt="Process" style="aspect-ratio:16/9;">
+                <div class="play-ring" style="width:42px;height:42px;"><svg width="12" height="12" fill="#fff" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+                <span class="vid-meta" style="top:10px;left:10px;">Ep. 03</span>
+                <span class="vid-meta" style="bottom:10px;right:10px;">15:30</span>
+            </a>
+            <div style="padding:20px 20px;">
+                <span style="font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);border:1px solid rgba(255,255,255,0.08);padding:3px 9px;border-radius:999px;">Process</span>
+                <h3 style="margin-top:12px; font-size:1.05rem; font-weight:600; color:#fff; letter-spacing:-0.01em;">Writing Songs Nobody Asked For</h3>
+                <p style="margin-top:6px; font-size:0.78rem; color:var(--muted); line-height:1.75;">How we make music that belongs to us first.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div style="margin-top:40px; display:flex; align-items:center; gap:20px;">
+        <div style="height:1px; flex:1; background:rgba(255,255,255,0.05);"></div>
+        <a href="https://youtube.com" target="_blank" class="label" style="text-decoration:none; color:var(--muted); white-space:nowrap; transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted)'">View all films →</a>
+        <div style="height:1px; flex:1; background:rgba(255,255,255,0.05);"></div>
+    </div>
+</section>
+
+<!-- ════════════════════════════════════════
+     QUIZ
+════════════════════════════════════════ -->
+<section id="quiz-container" style="padding:110px 28px; max-width:720px; margin:0 auto; border-bottom:1px solid rgba(255,255,255,0.05);">
+
+    <div class="glass-card" style="padding:52px 44px; position:relative; overflow:hidden;">
+
+        <!-- Subtle orb behind quiz -->
+        <div style="position:absolute; top:-60px; right:-60px; width:280px; height:280px; border-radius:50%;
+            background:radial-gradient(circle, rgba(180,77,255,0.18) 0%, transparent 70%);
+            filter:blur(50px); pointer-events:none;"></div>
+
+        <div id="quiz-intro" style="text-align:center; position:relative;">
+            <p class="label" style="margin-bottom:20px;">03 — Recruitment</p>
+            <h2 style="font-size:clamp(2.2rem,4.5vw,4rem); font-weight:700; letter-spacing:-0.025em; color:#fff; line-height:0.95; margin-bottom:16px;">
+                Idol Archetype<br><span class="bloom-gradient">Engine</span>
+            </h2>
+            <p style="color:var(--muted); font-size:0.88rem; line-height:1.85; max-width:360px; margin:0 auto 36px;">
+                Discover your place in our sonic ecosystem and unlock the creative recruitment pipeline.
             </p>
-            <button onclick="startQuiz()" class="text-xs tracking-widest uppercase px-8 py-4 rounded-full font-medium transition-all" style="background: var(--soft-black); color: var(--warm-white);">
+            <button onclick="startQuiz()" style="font-size:11px; letter-spacing:0.18em; text-transform:uppercase; font-weight:600; padding:14px 36px; border-radius:999px; background:#fff; color:#050505; border:none; cursor:pointer; transition:opacity 0.2s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
                 Begin Scanning
             </button>
         </div>
 
-        <div id="quiz-questions" class="hidden">
-            <div class="flex justify-between items-center mb-10 pb-4" style="border-bottom: 1px solid rgba(200,184,154,0.35);">
-                <span class="section-label" id="progress-text">Question 1 of 3</span>
-                <div class="w-32 h-px overflow-hidden" style="background: rgba(200,184,154,0.3);">
-                    <div id="progress-bar" class="h-full transition-all duration-500" style="width: 33%; background: var(--soft-black);"></div>
+        <div id="quiz-questions" class="hidden" style="position:relative;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:36px; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.06);">
+                <span class="label" id="progress-text">Question 1 of 3</span>
+                <div style="width:100px; height:1px; background:rgba(255,255,255,0.08); overflow:hidden;">
+                    <div id="progress-bar" style="height:100%; width:33%; background:linear-gradient(90deg,var(--cyan),var(--violet)); transition:width 0.4s ease;"></div>
                 </div>
             </div>
-            <h3 id="question-text" class="font-display mb-8" style="font-size: 1.6rem; font-weight: 300; color: var(--soft-black);"></h3>
-            <div id="options-container" class="space-y-3"></div>
+            <h3 id="question-text" style="font-size:clamp(1.3rem,2.5vw,1.9rem); font-weight:600; color:#fff; letter-spacing:-0.015em; line-height:1.15; margin-bottom:28px;"></h3>
+            <div id="options-container" style="display:flex; flex-direction:column; gap:10px;"></div>
         </div>
 
-        <div id="quiz-result" class="hidden text-center">
-            <span class="section-label">Analysis Complete</span>
-            <p class="font-display mt-4 text-lg font-light" style="color: var(--muted);">Your core archetype is</p>
-            <h2 id="result-title" class="font-display my-3" style="font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 300; color: var(--soft-black);"></h2>
-            <p id="result-desc" class="text-sm mx-auto mb-10" style="color: var(--muted); max-width: 380px; line-height: 1.8;"></p>
-            <div class="p-6 rounded-xl mb-8 text-left" style="background: var(--cream); border: 1px solid rgba(200,184,154,0.4);">
-                <p class="text-xs mb-2" style="color: var(--muted);">Ready to submit your portfolio?</p>
-                <a href="mailto:recruitment@bloom-collective.io" class="text-sm font-medium transition-colors hover:opacity-70" style="color: var(--soft-black);">recruitment@bloom-collective.io →</a>
+        <div id="quiz-result" class="hidden" style="text-align:center; position:relative;">
+            <p class="label" style="margin-bottom:12px; color:rgba(255,255,255,0.3);">Analysis Complete</p>
+            <p style="font-size:0.82rem; color:var(--muted); margin-bottom:6px; letter-spacing:0.05em;">Your core archetype is</p>
+            <h2 id="result-title" class="bloom-gradient" style="font-size:clamp(2.2rem,5vw,4rem); font-weight:700; letter-spacing:-0.02em; line-height:0.95; margin-bottom:20px;"></h2>
+            <p id="result-desc" style="color:var(--muted); font-size:0.86rem; line-height:1.85; max-width:380px; margin:0 auto 36px;"></p>
+            <div class="glass-card" style="padding:22px 24px; text-align:left; margin-bottom:28px;">
+                <p style="font-size:0.78rem; color:var(--muted); margin-bottom:8px;">Ready to submit your portfolio?</p>
+                <a href="mailto:recruitment@bloom-collective.io" style="font-size:0.88rem; font-weight:500; color:#fff; text-decoration:none; transition:opacity 0.2s;" onmouseover="this.style.opacity='.6'" onmouseout="this.style.opacity='1'">recruitment@bloom-collective.io →</a>
             </div>
-            <button onclick="restartQuiz()" class="section-label hover:text-[var(--soft-black)] transition-colors">Recalibrate →</button>
+            <button onclick="restartQuiz()" class="label" style="background:none; border:none; cursor:pointer; color:var(--muted); transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted)'">Recalibrate →</button>
         </div>
-    </section>
+    </div>
+</section>
 
-    <hr class="divider mx-8 md:mx-16">
-
-    <!-- STORE -->
-    <section id="store" class="py-28 px-8 md:px-16 max-w-7xl mx-auto">
-        <div class="flex justify-between items-end mb-14">
-            <div>
-                <span class="section-label">04 — Supply</span>
-                <h2 class="font-display mt-4" style="font-size: clamp(2rem, 4.5vw, 4rem); font-weight: 300; color: var(--soft-black);">
-                    Limited<br><em>Drops</em>
-                </h2>
-            </div>
-            <span class="section-label">Objects & Artifacts</span>
+<!-- ════════════════════════════════════════
+     STORE
+════════════════════════════════════════ -->
+<section id="store" style="padding:110px 28px; max-width:1320px; margin:0 auto; border-bottom:1px solid rgba(255,255,255,0.05);">
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:56px; flex-wrap:wrap; gap:16px;">
+        <div>
+            <p class="label" style="margin-bottom:20px;">04 — Supply</p>
+            <h2 style="font-size:clamp(2.4rem,5.5vw,5.5rem); font-weight:700; letter-spacing:-0.025em; line-height:0.94; color:#fff;">
+                Limited<br><span class="bloom-gradient">Drops</span>
+            </h2>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <span class="label">Objects &amp; Artifacts</span>
+    </div>
 
-            <div class="store-card rounded-2xl overflow-hidden p-6 flex flex-col justify-between h-[460px]" style="border: 1px solid rgba(200,184,154,0.3);">
-                <div class="relative w-full h-52 rounded-xl overflow-hidden mb-5 flex items-center justify-center" style="background: var(--blush);">
-                    <img src="https://images.unsplash.com/photo-1549497538-303791108f94?q=80&w=600&auto=format&fit=crop" alt="Vinyl" class="w-28 h-28 rounded-full object-cover" style="filter: saturate(0.6);">
-                    <span class="absolute top-3 right-3 tag">Vinyl</span>
-                </div>
-                <div>
-                    <h3 class="font-display text-xl font-light" style="color: var(--soft-black);">GENESIS // Echoes of Bloom</h3>
-                    <p class="text-xs mt-2" style="color: var(--muted); line-height: 1.7;">180g Transparent Purple Vinyl. Includes unreleased zine and B-sides.</p>
-                </div>
-                <div class="flex justify-between items-center pt-4 mt-4" style="border-top: 1px solid rgba(200,184,154,0.3);">
-                    <span class="font-mono-custom text-base" style="color: var(--soft-black);">$42.00</span>
-                    <button class="text-xs tracking-widest uppercase px-4 py-2 rounded-full transition-all font-medium" style="border: 1px solid var(--soft-black); color: var(--soft-black);" onmouseover="this.style.background='var(--soft-black)';this.style.color='var(--warm-white)'" onmouseout="this.style.background='transparent';this.style.color='var(--soft-black)'">Add to Cart</button>
-                </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:16px;">
+
+        <div class="glass-card store-card" style="overflow:hidden;">
+            <div style="height:200px; background:rgba(180,77,255,0.07); display:flex; align-items:center; justify-content:center; position:relative;">
+                <img src="https://images.unsplash.com/photo-1549497538-303791108f94?q=80&w=600&auto=format&fit=crop" alt="Vinyl" style="width:88px;height:88px;border-radius:50%;object-fit:cover;filter:saturate(0.4) contrast(1.3);">
+                <span style="position:absolute;top:12px;right:12px;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;border:1px solid rgba(255,255,255,0.1);color:var(--muted);padding:3px 9px;border-radius:999px;">Vinyl</span>
             </div>
-
-            <div class="store-card rounded-2xl overflow-hidden p-6 flex flex-col justify-between h-[460px]" style="border: 1px solid rgba(200,184,154,0.3);">
-                <div class="relative w-full h-52 rounded-xl overflow-hidden mb-5 flex items-center justify-center" style="background: var(--cream);">
-                    <div class="font-mono-custom font-bold text-5xl tracking-widest" style="color: rgba(26,24,20,0.08);">BLM</div>
-                    <span class="absolute top-3 right-3 tag">Apparel</span>
-                </div>
-                <div>
-                    <h3 class="font-display text-xl font-light" style="color: var(--soft-black);">Metallic Sub-Culture Hoodie</h3>
-                    <p class="text-xs mt-2" style="color: var(--muted); line-height: 1.7;">450GSM organic cotton. Reflective print. Boxy fit.</p>
-                </div>
-                <div class="flex justify-between items-center pt-4 mt-4" style="border-top: 1px solid rgba(200,184,154,0.3);">
-                    <span class="font-mono-custom text-base" style="color: var(--soft-black);">$85.00</span>
-                    <button class="text-xs tracking-widest uppercase px-4 py-2 rounded-full transition-all font-medium" style="border: 1px solid var(--soft-black); color: var(--soft-black);" onmouseover="this.style.background='var(--soft-black)';this.style.color='var(--warm-white)'" onmouseout="this.style.background='transparent';this.style.color='var(--soft-black)'">Add to Cart</button>
-                </div>
-            </div>
-
-            <div class="store-card rounded-2xl overflow-hidden p-6 flex flex-col justify-between h-[460px]" style="border: 1px solid rgba(200,184,154,0.3);">
-                <div class="relative w-full h-52 rounded-xl overflow-hidden mb-5 flex items-center justify-center" style="background: var(--cream);">
-                    <div class="w-20 h-28 rounded-lg flex items-center justify-center rotate-6" style="border: 2px dashed rgba(200,184,154,0.6);">
-                        <span class="font-mono-custom text-xs tracking-widest uppercase" style="color: var(--accent);">PASS</span>
-                    </div>
-                    <span class="absolute top-3 right-3 tag">Access</span>
-                </div>
-                <div>
-                    <h3 class="font-display text-xl font-light" style="color: var(--soft-black);">Dock-7 Multiverse Pass</h3>
-                    <p class="text-xs mt-2" style="color: var(--muted); line-height: 1.7;">Virtual concert access, live soundboard, and exclusive audio stems.</p>
-                </div>
-                <div class="flex justify-between items-center pt-4 mt-4" style="border-top: 1px solid rgba(200,184,154,0.3);">
-                    <span class="font-mono-custom text-base" style="color: var(--soft-black);">$25.00</span>
-                    <button class="text-xs tracking-widest uppercase px-4 py-2 rounded-full transition-all font-medium" style="border: 1px solid var(--soft-black); color: var(--soft-black);" onmouseover="this.style.background='var(--soft-black)';this.style.color='var(--warm-white)'" onmouseout="this.style.background='transparent';this.style.color='var(--soft-black)'">Mint Pass</button>
+            <div style="padding:22px 22px;">
+                <h3 style="font-size:1.05rem;font-weight:600;color:#fff;letter-spacing:-0.01em;">GENESIS // Echoes of Bloom</h3>
+                <p style="font-size:0.78rem;color:var(--muted);margin-top:8px;line-height:1.75;">180g Transparent Purple Vinyl. Includes unreleased zine and B-sides.</p>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);">
+                    <span style="font-family:'Space Mono',monospace;font-size:0.95rem;color:#fff;">$42.00</span>
+                    <button style="font-size:9px;letter-spacing:0.18em;text-transform:uppercase;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);padding:8px 16px;border-radius:999px;background:transparent;cursor:pointer;transition:border-color 0.2s,color 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,.15)';this.style.color='rgba(255,255,255,.7)'">Add to Cart</button>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- FOOTER -->
-    <footer class="py-16 px-8 md:px-16" style="border-top: 1px solid rgba(200,184,154,0.35);">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="font-display text-2xl font-semibold tracking-widest" style="color: var(--soft-black);">BLOOM.</div>
-            <span class="section-label">© 2024 BLOOM Collective. All rights reserved.</span>
-            <div class="flex gap-6">
-                <a href="https://youtube.com" target="_blank" class="section-label hover:text-[var(--soft-black)] transition-colors">YouTube</a>
-                <a href="https://instagram.com" target="_blank" class="section-label hover:text-[var(--soft-black)] transition-colors">Instagram</a>
-                <a href="https://twitter.com" target="_blank" class="section-label hover:text-[var(--soft-black)] transition-colors">Twitter</a>
+        <div class="glass-card store-card" style="overflow:hidden;">
+            <div style="height:200px; background:rgba(0,245,255,0.04); display:flex; align-items:center; justify-content:center; position:relative;">
+                <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:64px;color:rgba(255,255,255,0.04);letter-spacing:0.1em;">BLM</span>
+                <span style="position:absolute;top:12px;right:12px;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;border:1px solid rgba(255,255,255,0.1);color:var(--muted);padding:3px 9px;border-radius:999px;">Apparel</span>
+            </div>
+            <div style="padding:22px 22px;">
+                <h3 style="font-size:1.05rem;font-weight:600;color:#fff;letter-spacing:-0.01em;">Metallic Sub-Culture Hoodie</h3>
+                <p style="font-size:0.78rem;color:var(--muted);margin-top:8px;line-height:1.75;">450GSM organic cotton. Reflective print. Boxy fit.</p>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);">
+                    <span style="font-family:'Space Mono',monospace;font-size:0.95rem;color:#fff;">$85.00</span>
+                    <button style="font-size:9px;letter-spacing:0.18em;text-transform:uppercase;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);padding:8px 16px;border-radius:999px;background:transparent;cursor:pointer;transition:border-color 0.2s,color 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,.15)';this.style.color='rgba(255,255,255,.7)'">Add to Cart</button>
+                </div>
             </div>
         </div>
-    </footer>
 
-    <script>
-        // Custom cursor
-        const cursor = document.getElementById('cursor');
-        const ring = document.getElementById('cursor-ring');
-        document.addEventListener('mousemove', e => {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-            setTimeout(() => {
-                ring.style.left = e.clientX + 'px';
-                ring.style.top = e.clientY + 'px';
-            }, 80);
+        <div class="glass-card store-card" style="overflow:hidden;">
+            <div style="height:200px; background:rgba(255,45,120,0.05); display:flex; align-items:center; justify-content:center; position:relative;">
+                <div style="width:60px;height:84px;border:1px dashed rgba(255,255,255,0.15);border-radius:6px;display:flex;align-items:center;justify-content:center;transform:rotate(5deg);">
+                    <span style="font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.25);">PASS</span>
+                </div>
+                <span style="position:absolute;top:12px;right:12px;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;border:1px solid rgba(255,255,255,0.1);color:var(--muted);padding:3px 9px;border-radius:999px;">Access</span>
+            </div>
+            <div style="padding:22px 22px;">
+                <h3 style="font-size:1.05rem;font-weight:600;color:#fff;letter-spacing:-0.01em;">Dock-7 Multiverse Pass</h3>
+                <p style="font-size:0.78rem;color:var(--muted);margin-top:8px;line-height:1.75;">Virtual concert access, live soundboard, and exclusive audio stems.</p>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);">
+                    <span style="font-family:'Space Mono',monospace;font-size:0.95rem;color:#fff;">$25.00</span>
+                    <button style="font-size:9px;letter-spacing:0.18em;text-transform:uppercase;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);padding:8px 16px;border-radius:999px;background:transparent;cursor:pointer;transition:border-color 0.2s,color 0.2s;" onmouseover="this.style.borderColor='rgba(255,255,255,.4)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,.15)';this.style.color='rgba(255,255,255,.7)'">Mint Pass</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer style="padding:40px 28px; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:20px; border-top:1px solid rgba(255,255,255,0.05); max-width:1320px; margin:0 auto;">
+    <span style="font-size:17px;font-weight:700;letter-spacing:0.12em;color:#fff;">BLOOM.</span>
+    <span class="label">© 2024 BLOOM Collective. All rights reserved.</span>
+    <div style="display:flex;gap:24px;">
+        <a href="https://youtube.com"   target="_blank" class="label" style="text-decoration:none;color:var(--muted);transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted)'">YouTube</a>
+        <a href="https://instagram.com" target="_blank" class="label" style="text-decoration:none;color:var(--muted);transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted)'">Instagram</a>
+        <a href="https://twitter.com"   target="_blank" class="label" style="text-decoration:none;color:var(--muted);transition:color 0.2s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted)'">Twitter</a>
+    </div>
+</footer>
+
+<script>
+    const quizData = [
+        {
+            question: "Where does your creative energy peak?",
+            options: [
+                { text: "In a dimly lit studio, deconstructing analog synths.", type: "Glitch Producer" },
+                { text: "Under neon streetlights, translating movement into expression.", type: "Liquid Performer" },
+                { text: "In digital forums, building interactive visual code.", type: "Visual Avant-Garde" }
+            ]
+        },
+        {
+            question: "What is your stance on mainstream pop conventions?",
+            options: [
+                { text: "They are formulas meant to be shattered entirely.", type: "Glitch Producer" },
+                { text: "They lack the fluid intimacy of underground spaces.", type: "Liquid Performer" },
+                { text: "They treat visual mediums with zero risk.", type: "Visual Avant-Garde" }
+            ]
+        },
+        {
+            question: "Choose a texture that defines your artistic voice:",
+            options: [
+                { text: "Distorted heavy bass and chrome surfaces.", type: "Glitch Producer" },
+                { text: "Fluid, high-contrast silhouettes in slow motion.", type: "Liquid Performer" },
+                { text: "Hyper-saturated glitch art and clean lines.", type: "Visual Avant-Garde" }
+            ]
+        }
+    ];
+
+    let currentQuestion = 0, scores = {};
+
+    function startQuiz() {
+        document.getElementById('quiz-intro').classList.add('hidden');
+        document.getElementById('quiz-questions').classList.remove('hidden');
+        showQuestion();
+    }
+    function showQuestion() {
+        const q = quizData[currentQuestion];
+        document.getElementById('question-text').innerText = q.question;
+        document.getElementById('progress-text').innerText = `Question ${currentQuestion + 1} of ${quizData.length}`;
+        document.getElementById('progress-bar').style.width = `${((currentQuestion + 1) / quizData.length) * 100}%`;
+        const c = document.getElementById('options-container');
+        c.innerHTML = '';
+        q.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'q-opt';
+            btn.innerText = opt.text;
+            btn.onclick = () => selectOption(opt.type);
+            c.appendChild(btn);
         });
-
-        // Quiz
-        const quizData = [
-            {
-                question: "Where does your creative energy peak?",
-                options: [
-                    { text: "In a dimly lit studio, deconstructing analog synths.", type: "Glitch Producer" },
-                    { text: "Under neon streetlights, translating movement into expression.", type: "Liquid Performer" },
-                    { text: "In digital forums, building interactive visual code.", type: "Visual Avant-Garde" }
-                ]
-            },
-            {
-                question: "What is your stance on mainstream pop?",
-                options: [
-                    { text: "Formulas meant to be shattered entirely.", type: "Glitch Producer" },
-                    { text: "Lacks the intimacy of underground spaces.", type: "Liquid Performer" },
-                    { text: "Treats visual mediums with zero risk.", type: "Visual Avant-Garde" }
-                ]
-            },
-            {
-                question: "Choose a texture for your artistic voice:",
-                options: [
-                    { text: "Distorted heavy bass and chrome surfaces.", type: "Glitch Producer" },
-                    { text: "Fluid, high-contrast silhouettes in slow motion.", type: "Liquid Performer" },
-                    { text: "Hyper-saturated glitch art and clean lines.", type: "Visual Avant-Garde" }
-                ]
-            }
-        ];
-
-        let currentQuestion = 0;
-        let scores = {};
-
-        function startQuiz() {
-            document.getElementById('quiz-intro').classList.add('hidden');
-            document.getElementById('quiz-questions').classList.remove('hidden');
-            showQuestion();
-        }
-        function showQuestion() {
-            const q = quizData[currentQuestion];
-            document.getElementById('question-text').innerText = q.question;
-            document.getElementById('progress-text').innerText = `Question ${currentQuestion + 1} of ${quizData.length}`;
-            document.getElementById('progress-bar').style.width = `${((currentQuestion + 1) / quizData.length) * 100}%`;
-            const container = document.getElementById('options-container');
-            container.innerHTML = '';
-            q.options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = 'quiz-option w-full p-5 rounded-xl text-sm font-light tracking-wide';
-                btn.style.color = 'var(--ink)';
-                btn.innerText = opt.text;
-                btn.onclick = () => selectOption(opt.type);
-                container.appendChild(btn);
-            });
-        }
-        function selectOption(type) {
-            scores[type] = (scores[type] || 0) + 1;
-            currentQuestion++;
-            if (currentQuestion < quizData.length) { showQuestion(); } else { showResult(); }
-        }
-        function showResult() {
-            document.getElementById('quiz-questions').classList.add('hidden');
-            document.getElementById('quiz-result').classList.remove('hidden');
-            let maxType = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
-            const descriptions = {
-                "Glitch Producer": "You process the world through syncopated sub-bass and fragmented acoustic textures. The sonic architect of the collective.",
-                "Liquid Performer": "Your canvas is kinetic spatial architecture. You project raw emotion through movement, without words.",
-                "Visual Avant-Garde": "You build the conceptual skin of the collective — interactive, radical, and entirely your own."
-            };
-            document.getElementById('result-title').innerText = maxType;
-            document.getElementById('result-desc').innerText = descriptions[maxType];
-        }
-        function restartQuiz() {
-            currentQuestion = 0; scores = {};
-            document.getElementById('quiz-result').classList.add('hidden');
-            document.getElementById('quiz-intro').classList.remove('hidden');
-        }
-    </script>
+    }
+    function selectOption(type) {
+        scores[type] = (scores[type] || 0) + 1;
+        currentQuestion++;
+        if (currentQuestion < quizData.length) { showQuestion(); } else { showResult(); }
+    }
+    function showResult() {
+        document.getElementById('quiz-questions').classList.add('hidden');
+        document.getElementById('quiz-result').classList.remove('hidden');
+        let maxType = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+        const desc = {
+            "Glitch Producer": "You process the world through syncopated sub-bass and fragmented acoustic textures. You are the sonic architect anchoring the collective's experimental audio landscapes.",
+            "Liquid Performer": "Your canvas is kinetic spatial architecture. You blend underground street movement with avant-garde contemporary dance to project raw emotion without words.",
+            "Visual Avant-Garde": "You manufacture the conceptual skin of the collective. From interactive 3D elements to radical styling configurations, your vision structures how Gen Z captures reality."
+        };
+        document.getElementById('result-title').innerText = maxType;
+        document.getElementById('result-desc').innerText = desc[maxType];
+    }
+    function restartQuiz() {
+        currentQuestion = 0; scores = {};
+        document.getElementById('quiz-result').classList.add('hidden');
+        document.getElementById('quiz-intro').classList.remove('hidden');
+    }
+</script>
 </body>
 </html>
